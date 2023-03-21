@@ -5,7 +5,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
+
 import jwt_decode from "jwt-decode"
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -25,13 +25,13 @@ export default function Login({ setIsAuthenticated, isAuthenticated }){
     const username = e.target.username.value;
     const password = e.target.password.value;
     try {
-      const response = await fetch("http://localhost:3000/admin/authlogin", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/authlogin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
       const data = await response.json();
-      console.log(data);
+    
       if (data.status) {
         const token = data.token;
         const decodedToken = jwt_decode(token);

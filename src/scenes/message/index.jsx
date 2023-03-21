@@ -19,7 +19,7 @@ const MessageList = () => {
 
   const  handleDeleteMessage= async (id) => {
     try {
-        await fetch(`http://localhost:3000/admin/delete-message/${id}`, {method: "DELETE"});
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/delete-message/${id}`, {method: "DELETE"});
 
       window.location.reload()
     } catch (error) {
@@ -31,9 +31,9 @@ const MessageList = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await fetch("http://localhost:3000/admin/messages");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/messages`);
         const data = await response.json();
-        console.log(data);
+        
         setMessages(data.messages); // update to access the "messages" key
         setIsLoading(false);
       } catch (error) {

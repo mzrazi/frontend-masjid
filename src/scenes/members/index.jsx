@@ -16,7 +16,7 @@ const Members = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/admin/user-members/${id}`);
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/user-members/${id}`);
         const data = await response.json();
         const membersWithId = data.members.map((member, index) => ({ ...member, id: index + 1 }));
         setMembers(membersWithId);

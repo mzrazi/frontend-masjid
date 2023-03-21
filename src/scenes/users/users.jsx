@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import DataGridCustomToolbar from "components/DataGridCustomToolbar";
-import { Link } from "react-router-dom";
+
 import { Button } from "@mui/material";
 
 
@@ -49,9 +49,9 @@ const columns = [
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await fetch("http://localhost:3000/admin/all-users");
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/all-users`);
       const data = await res.json();
-      console.log(data);
+    
       // Add id field to data
       const usersWithId = data.map((user, index) => ({ id: index + 1, ...user, Members: user.Family.length }));
       setUsers(usersWithId);
@@ -70,7 +70,7 @@ const columns = [
 
   const handleDelete = async (id) => {
     try {
-        await fetch(`http://localhost:3000/admin/delete-user/${id}`, {method: "DELETE"});
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/delete-user/${id}`, {method: "DELETE"});
 
       window.location.reload()
     } catch (error) {

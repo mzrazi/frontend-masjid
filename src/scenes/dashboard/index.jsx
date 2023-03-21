@@ -7,7 +7,6 @@ import {
   ChatBubbleOutline,
   Event,
   Home,
-  HelpOutline,
 } from "@mui/icons-material";
 import {
   Box,
@@ -34,9 +33,9 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/admin/dashboard`);
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/dashboard`);
         const data = await response.json();
-        console.log(data);
+        
         setData({
           userCount: data.userCount,
           familyCount: data.familyCount,

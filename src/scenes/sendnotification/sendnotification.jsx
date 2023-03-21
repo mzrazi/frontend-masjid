@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import Header from "components/Header";
-import { Send } from "@mui/icons-material";
+
 import { useNavigate } from "react-router-dom";
 
 const SendNotification = () => {
@@ -12,7 +12,7 @@ const SendNotification = () => {
   const [allUsers, setAllUsers] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/admin/all-users")
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/all-users`)
       .then((response) => response.json())
       .then((data) => setAllUsers(data))
       .catch((error) => console.log(error));
@@ -21,13 +21,13 @@ const SendNotification = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch("http://localhost:3000/admin/send-notification", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/send-notification`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title,message, selectedUsers }),
       });
       const data = await response.json();
-      console.log(data);
+      
       navigate("/notifications");
     } catch (error) {
       console.error(error);

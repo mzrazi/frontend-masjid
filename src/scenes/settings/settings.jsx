@@ -29,7 +29,7 @@ const handleChangePassword = () => {
     setPasswordChanged("false")
     setError(false)
     const userId = localStorage.getItem("userId");
-    fetch('http://localhost:3000/admin/change-admin-password', {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/change-admin-password`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ const handleChangePassword = () => {
     setUsernameChanged(false)
     setError(false)
     const userId = localStorage.getItem("userId");
-    fetch('http://localhost:3000/admin/change-admin-username/', {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/change-admin-username/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

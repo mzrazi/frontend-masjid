@@ -10,9 +10,9 @@ const Gallery = () => {
     useEffect(() => {
         const fetchImages = async () => {
             try {
-                const res = await fetch("http://localhost:3000/gallery");
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/gallery`);
                 const data = await res.json();
-                console.log(data);
+                
                 setImages(data.images);
             } catch (error) {
                 console.error(error);
@@ -24,7 +24,7 @@ const Gallery = () => {
 
     const handleDelete = async (id) => {
         try {
-            await fetch(`http://localhost:3000/admin/imagedelete/${id}`, {method: "DELETE"});
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/imagedelete/${id}`, {method: "DELETE"});
 
             setImages((prevImages) => prevImages.filter((image) => image._id !== id));
         } catch (error) {

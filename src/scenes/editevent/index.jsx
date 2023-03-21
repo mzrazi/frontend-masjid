@@ -16,7 +16,7 @@ const EditEvent = () => {
     useEffect(() => {
         const fetchEvent = async () => {
        
-            const response = await fetch(`http://localhost:3000/admin/get-event/${id}`);
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/get-event/${id}`);
             const edit = await response.json()
             const data=edit.events
            
@@ -25,7 +25,7 @@ const EditEvent = () => {
             setDate(data.date);
             setImagePreview(data.imagePath);
             setEventId(data._id);
-            console.log(data.imagePath);
+            
         };
         fetchEvent();
     }, [id]);
@@ -33,11 +33,11 @@ const EditEvent = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        fetch(`http://localhost:3000/admin/update-event/${eventId}`, {
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/update-event/${eventId}`, {
             method: "PUT",
             body: formData
         }).then((response) => response.json()).then((data) => {
-            console.log(data);
+           
             navigate('/events');
         }).catch((error) => console.error(error));
     };

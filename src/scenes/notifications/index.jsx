@@ -17,7 +17,7 @@ const Notifications = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/admin/admin-notifications`);
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/admin-notifications`);
         const data = await response.json();
         const notificationsWithId = data.notifications.map((notification, index) => ({ ...notification, id: index + 1 }));
         setNotifications(notificationsWithId);
@@ -33,7 +33,7 @@ const Notifications = () => {
 
   const handleDelete = async (id) => {
     try {
-        await fetch(`http://localhost:3000/admin/delete-notification/${id}`, {method: "DELETE"});
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/delete-notification/${id}`, {method: "DELETE"});
 
       window.location.reload()
     } catch (error) {

@@ -65,9 +65,9 @@ const Families = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await fetch("http://localhost:3000/admin/all-users");
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/all-users`);
       const data = await res.json();
-      console.log(data);
+     
       // Add id field to data
       const usersWithId = data.map((user, index) => ({ id: index + 1, ...user, Members: user.Family.length }));
       setUsers(usersWithId);

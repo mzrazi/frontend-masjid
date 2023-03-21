@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, useTheme,Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import {Link, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 
 import Header from "components/Header";
 import CustomColumnMenu from "components/DataGridCustomColumnMenu";
@@ -18,12 +18,12 @@ const Events = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/admin/user-payments/${id}`);
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/user-payments/${id}`);
         const res = await response.json();
        
         const data=res.paymentsWithMonthName
         const user=res.user
-        console.log(user);
+        
        
         const paymentsWithId = data.map((payment, index) => ({ ...payment, id: index + 1 }));
         setPayments(paymentsWithId);
@@ -41,7 +41,7 @@ const Events = () => {
  
 const updatePaymentStatus = (paymentId, status) => {
     // call API to update payment status
-    fetch(`http://localhost:3000/admin/change-status/${paymentId}`, {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/change-status/${paymentId}`, {
       method: "PUT",
       body: JSON.stringify({ status }),
       headers: {

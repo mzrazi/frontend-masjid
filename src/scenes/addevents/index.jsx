@@ -12,11 +12,11 @@ const AddEvents = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        fetch("http://localhost:3000/admin/save-event", {
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/save-event`, {
             method: "POST",
             body: formData
         }).then((response) => response.json()).then((data) => {
-            console.log(data);
+         
             window.location.reload();
         }).catch((error) => console.error(error));
     };

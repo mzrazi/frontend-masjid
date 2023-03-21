@@ -2,13 +2,14 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { useMemo } from "react";
 import { useSelector} from "react-redux";
-import { BrowserRouter, Navigate, Route, Outlet, Routes, Router } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Outlet, Routes } from "react-router-dom";
 import { themeSettings } from "theme";
 import Layout from "scenes/layout";
 import Dashboard from "scenes/dashboard";
 import Families from "scenes/families";
 import { useState,useEffect } from "react";
 import jwt_decode from "jwt-decode"
+
 
 
 
@@ -36,27 +37,27 @@ function App() {
 
 
 
-  console.log("done"+localStorage.token);
+  
   useEffect(() => {
     const token = localStorage.getItem('token');
     const expirationTime = localStorage.getItem('expirationTime');
 
-    console.log(token);
-    console.log(expirationTime);
+   
+   
     if (token && expirationTime) {
       const decodedToken = jwt_decode(token);
       const currentTime = new Date().getTime() / 1000;
       if (decodedToken.exp > currentTime) {
         setIsAuthenticated(true);
       } else {
-        console.log("called");
+        
         setIsAuthenticated(false);
         localStorage.removeItem('token');
         localStorage.removeItem('expirationTime');
       }
     } else {
       setIsAuthenticated(false);
-      console.log("else");
+      
     }
   }, []);
  
@@ -64,7 +65,7 @@ function App() {
   
  
   const PrivateRoutes = () => {
-   console.log("state"+ isAuthenticated);
+  
   return (
     isAuthenticated ? <Outlet/> : <Navigate to='/login'/>
   )
@@ -75,7 +76,7 @@ function App() {
     localStorage.removeItem("token");
     localStorage.removeItem("expirationTime");
     setIsAuthenticated(false);
-    console.log("set false");
+    
   }
 
 

@@ -17,7 +17,7 @@ const Events = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/admin/eventsview`);
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/eventsview`);
         const data = await response.json();
         const eventsWithId = data.events.map((event, index) => ({ ...event, id: index + 1 }));
         setEvents(eventsWithId);
@@ -33,7 +33,7 @@ const Events = () => {
 
   const handleDelete = async (id) => {
     try {
-        await fetch(`http://localhost:3000/admin/delete-event/${id}`, {method: "DELETE"});
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/delete-event/${id}`, {method: "DELETE"});
 
       window.location.reload()
     } catch (error) {
