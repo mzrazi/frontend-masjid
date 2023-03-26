@@ -1,40 +1,29 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-  IconButton,
-  useTheme,
-} from "@mui/material";
-
-import { DeleteOutline } from "@mui/icons-material";
+import { DataGrid } from "@mui/x-data-grid";
+import DataGridCustomToolbar from "components/DataGridCustomToolbar";
+import { Link } from "react-router-dom";
+import { Button } from "@mui/material";
 
 
-const MessageList = () => {
-  const theme = useTheme();
+
+const Message= () => {
+  const [users, setUsers] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchedUsers, setSearchedUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState([]);
-
-  const  handleDeleteMessage= async (id) => {
-    try {
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/delete-message/${id}`, {method: "DELETE"});
-
-      window.location.reload()
-    } catch (error) {
-        console.error(error);
-    }
-};
-  
 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/messages`);
         const data = await response.json();
+        console.log(data);
+        const messagesWithId = data.messages.map((message, index) => ({ ...message, id: index + 1 }));
+
         
-        setMessages(data.messages); // update to access the "messages" key
+        setMessages(messagesWithId); // update to access the "messages" key
+        console.log(messages);
         setIsLoading(false);
       } catch (error) {
         console.error(error);
@@ -46,64 +35,100 @@ const MessageList = () => {
     fetchMessages();
   }, []);
 
- 
+  const  handleDelete= async (id) => {
+    try {
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/delete-message/${id}`, {method: "DELETE"});
+
+      window.location.reload()
+    } catch (error) {
+        console.error(error);
+    }
+};
+  
+  
+
+
+  const columns= [
+    { field: "id", headerName: "ID", width: 50 },
+    {
+      field: "fullname",
+      headerName: "Username",
+      width: 200,
+     
+    },
+    
+    { field: "useremail", headerName: "Email", width: 250 },
+   
+    {
+      field: "title",
+      headerName: "Subject",
+      width: 200,
+    
+    },
+    { field: "createdAt", headerName: "Date & Time", width: 250 },
+    {
+      field: "ViewMessage",
+      headerName: "View message",
+      width: 150,
+      renderCell: (params) => (
+        <Button
+          component={Link}
+          to={`/view-message/${params.row._id}`}
+          variant="contained"
+          color="primary"
+        >
+          View
+        </Button>
+      )
+    },
+    {
+      field: "delete",
+      headerName: "delete",
+      width: 150,
+      renderCell: (params) => (
+        <Button variant="contained" color="warning"
+        onClick={
+            () => {
+                if (window.confirm("Are you sure you want to delete this event?")) {
+                 
+                    handleDelete(params.row._id);
+                }
+            }
+    }>
+        Delete
+    </Button>
+      )
+    },
+  
+    
+    
+    
+    
+  ];
+
+  useEffect(() => {
+    const filteredUsers = users.filter((user) =>
+      user.LastName.toLowerCase().includes(searchInput.toLowerCase())
+    );
+    setSearchedUsers(filteredUsers);
+  }, [users, searchInput]);
 
   return (
-    <Box m="1.5rem 2.5rem">
-      <Typography variant="h4" component="h1">
-        Messages
-      </Typography>
-      {isLoading ? (
-        <Typography>Loading messages...</Typography>
-      ) : (
-        <List sx={{ mt: 2 }}>
-          {messages.map((message) => (
-            <ListItem key={message._id} disablePadding>
-  <ListItemText
-    primaryTypographyProps={{
-      component: "div",
-      sx: { fontWeight: "bold", lineHeight: "1.3em" },
-    }}
-    secondaryTypographyProps={{
-      sx: { color: theme.palette.text.secondary },
-    }}
-    primary={
-      <>
-        {message.title}
-        <Typography variant="subtitle2" sx={{ color: theme.palette.text.secondary }}>
-          {`from: ${message.useremail}`}
-        </Typography>
-      </>
-    }
-    secondary={message.message}
-    sx={{
-      border: "1px solid",
-      borderColor: theme.palette.grey[300],
-      borderRadius: "8px",
-      p: 2,
-      "&:hover": {
-        borderColor: theme.palette.primary.main,
-      },
-    }}
-  />
-  <IconButton
-                aria-label="delete message"
-                onClick={ () => {
-                  if (window.confirm("Are you sure you want to delete this message?")) {
-                   
-                      handleDeleteMessage(message._id);
-                  }
-              }}
-              >
-               <DeleteOutline/>
-              </IconButton>
-</ListItem>
+    
+    <div style={{ height: 600, width: "98%",marginLeft:"20px" }}>
+      <DataGrid
+  rows={messages}
+  columns={columns}
+  components={{
+    Toolbar: (props) => (
+      <DataGridCustomToolbar {...props} searchInput={searchInput} setSearchInput={setSearchInput} />
+    ),
+  }}
+  disableSelectionOnClick
+/>
 
-          ))}
-        </List>
-      )}
-    </Box>
+    </div>
   );
 };
 
-export default MessageList;
+export default Message;

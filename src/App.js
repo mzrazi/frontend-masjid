@@ -27,6 +27,9 @@ import Payments from "scenes/payments/payments";
 import SendNotification from "scenes/sendnotification/sendnotification";
 import Settings from "scenes/settings/settings";
 import Users from "scenes/users/users";
+import Messageview from "scenes/messageview";
+import Resetpassword from "scenes/reset-password/resetpassword";
+import Verifytoken from "components/verifytoken";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
@@ -106,11 +109,14 @@ function App() {
                 <Route path="/sendnotification" element={<SendNotification />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/users" element={<Users />}/>
+                <Route path="/view-message/:id" element={<Messageview/>}/>
                 
               </Route>
             
           </Route>
           <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} isAuthenticated={isAuthenticated}/>} />
+          <Route path="/verify-token/:resetToken" element={<Verifytoken />}/>
+          <Route path="/reset-password/:resetToken" element={<Resetpassword />}/>
         </Routes>
         </ThemeProvider>
       </BrowserRouter>

@@ -53,6 +53,7 @@ const Gallery = () => {
                     <div className="gallery">
                         {
                         images.map((image) => (
+                            console.log(image.imagePath),
                             <div key={
                                 image._id
                             }>
