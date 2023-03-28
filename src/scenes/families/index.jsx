@@ -76,11 +76,13 @@ const Families = () => {
 
     fetchUsers();
   }, []);
-
   useEffect(() => {
     const filteredUsers = users.filter((user) =>
-      user.LastName.toLowerCase().includes(searchInput.toLowerCase())
-    );
+    user.FirstName.toLowerCase().startsWith(searchInput.toLowerCase()) ||
+    user.LastName.toLowerCase().startsWith(searchInput.toLowerCase())
+  );
+  
+    console.log(filteredUsers);
     setSearchedUsers(filteredUsers);
   }, [users, searchInput]);
 

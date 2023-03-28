@@ -30,6 +30,7 @@ import Users from "scenes/users/users";
 import Messageview from "scenes/messageview";
 import Resetpassword from "scenes/reset-password/resetpassword";
 import Verifytoken from "components/verifytoken";
+import Edituser from "scenes/edituser";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
@@ -78,8 +79,9 @@ function App() {
     // clear authentication state
     localStorage.removeItem("token");
     localStorage.removeItem("expirationTime");
+    localStorage.removeItem("userId")
     setIsAuthenticated(false);
-    
+    Navigate("/login")
   }
 
 
@@ -110,6 +112,7 @@ function App() {
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/users" element={<Users />}/>
                 <Route path="/view-message/:id" element={<Messageview/>}/>
+                <Route path="/edit-user/:id" element={<Edituser />}/>
                 
               </Route>
             

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import DataGridCustomToolbar from "components/DataGridCustomToolbar";
+
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 
 
 
 const Message= () => {
-  const [users, setUsers] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
-  const [searchedUsers, setSearchedUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [users, setUsers] = useState([]);
+  // const [searchInput, setSearchInput] = useState("");
+  // const [searchedUsers, setSearchedUsers] = useState([]);
+
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -24,16 +24,16 @@ const Message= () => {
         
         setMessages(messagesWithId); // update to access the "messages" key
         console.log(messages);
-        setIsLoading(false);
+       
       } catch (error) {
         console.error(error);
-        setIsLoading(false);
+       
       }
     };
     
 
     fetchMessages();
-  }, []);
+  }, [messages]);
 
   const  handleDelete= async (id) => {
     try {
@@ -106,12 +106,12 @@ const Message= () => {
     
   ];
 
-  useEffect(() => {
-    const filteredUsers = users.filter((user) =>
-      user.LastName.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    setSearchedUsers(filteredUsers);
-  }, [users, searchInput]);
+  // useEffect(() => {
+  //   const filteredUsers = users.filter((user) =>
+  //     user.LastName.toLowerCase().includes(searchInput.toLowerCase())
+  //   );
+  //   setSearchedUsers(filteredUsers);
+  // }, [users, searchInput]);
 
   return (
     
@@ -119,11 +119,7 @@ const Message= () => {
       <DataGrid
   rows={messages}
   columns={columns}
-  components={{
-    Toolbar: (props) => (
-      <DataGridCustomToolbar {...props} searchInput={searchInput} setSearchInput={setSearchInput} />
-    ),
-  }}
+
   disableSelectionOnClick
 />
 

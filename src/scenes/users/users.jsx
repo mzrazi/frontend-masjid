@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import DataGridCustomToolbar from "components/DataGridCustomToolbar";
+import {Link} from "react-router-dom";
+
 
 import { Button } from "@mui/material";
 
@@ -11,15 +13,21 @@ const Users = () => {
   const [searchedUsers, setSearchedUsers] = useState([]);
   
 const columns = [
-    { field: "id", headerName: "ID", width: 100 },
+    { field: "id", headerName: "ID", width: 80 },
     {
-      field: "fullName",
-      headerName: "Full Name",
-      width: 200,
-      valueGetter: (params) => `${params.row.FirstName} ${params.row.LastName}`,
+      field: "FirstName",
+      headerName: "First Name",
+      width: 150,
+   
+    },
+    {
+      field: "LastName",
+      headerName: "Last Name",
+      width: 150,
+      
     },
     { field: "Address", headerName: "Address", width: 200 },
-    { field: "Email", headerName: "Email", width: 200 },
+    { field: "Email", headerName: "Email", width: 150 },
     { field: "Phone", headerName: "Phone", width: 200 },
     {
       field: "delete",
@@ -38,8 +46,19 @@ const columns = [
         Delete
     </Button>
       )
-    }
-  
+    },
+    {
+      field: "edit",
+      headerName: "edit",
+      width: 150,
+      renderCell: (params) => (
+        <Link className="linkbutton" to={`/edit-user/${params.row._id}`}>
+          <Button variant="contained" color="success">
+            Edit
+          </Button>
+        </Link>
+      )
+    } 
   
     
     
@@ -63,8 +82,11 @@ const columns = [
 
   useEffect(() => {
     const filteredUsers = users.filter((user) =>
-      user.LastName.toLowerCase().includes(searchInput.toLowerCase())
-    );
+    user.FirstName.toLowerCase().startsWith(searchInput.toLowerCase()) ||
+    user.LastName.toLowerCase().startsWith(searchInput.toLowerCase())
+  );
+  
+    console.log(filteredUsers);
     setSearchedUsers(filteredUsers);
   }, [users, searchInput]);
 
