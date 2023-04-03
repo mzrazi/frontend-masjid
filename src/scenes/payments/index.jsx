@@ -82,6 +82,11 @@ const updatePaymentStatus = (paymentId, status) => {
         headerName: "Status",
         width: 200
       },
+      {
+        field: "paidOn",
+        headerName: "Paid date",
+        width: 200
+      },
 
     {
         field: "actions",
