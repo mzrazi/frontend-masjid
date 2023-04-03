@@ -22,9 +22,10 @@ const Messageview = () => {
   const  handleDeleteMessage= async (id) => {
     try {
         await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/delete-message/${id}`, {method: "DELETE"});
-
+        localStorage.setItem("messagealert", JSON.stringify({ message: "message deleted successfully", type: "success" }));
      Navigate('/messages')
     } catch (error) {
+      localStorage.setItem("messagealert", JSON.stringify({ message: "message delete error", type: "error" }));
         console.error(error);
     }
 };
@@ -46,7 +47,7 @@ const Messageview = () => {
     
 
     fetchMessages();
-  }, []);
+  }, [id]);
 
  
 

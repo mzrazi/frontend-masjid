@@ -3,6 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import DataGridCustomToolbar from "components/DataGridCustomToolbar";
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
+import CustomAlertBox from "components/customAlertBox";
 
 const columns = [
   { field: "id", headerName: "ID", width: 100 },
@@ -62,6 +63,7 @@ const Families = () => {
   const [users, setUsers] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [searchedUsers, setSearchedUsers] = useState([]);
+  const [alert, setAlert] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -89,6 +91,13 @@ const Families = () => {
   return (
     
     <div style={{ height: 600, width: "98%",marginLeft:"20px" }}>
+      {alert && ( // Render the alert message if it exists
+          <CustomAlertBox
+            message={alert.message}
+            type={alert.type}
+            onClose={() => setAlert(null)}
+          />
+        )}
       <DataGrid
   rows={searchedUsers}
   columns={columns}

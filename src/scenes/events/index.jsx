@@ -5,11 +5,17 @@ import {Link} from "react-router-dom";
 
 import Header from "components/Header";
 import CustomColumnMenu from "components/DataGridCustomColumnMenu";
+import CustomAlertBox from "components/customAlertBox";
+
+
 
 const Events = () => {
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(true);
   const [events, setEvents] = useState([]);
+  const [alert, setAlert] = useState(null);
+  
+
  
 
 
@@ -27,19 +33,32 @@ const Events = () => {
         setIsLoading(false);
       }
     };
+       // Get the alert message from the localStorage object
+       const alertMessage = JSON.parse(localStorage.getItem("alert"));
+       if (alertMessage) {
+         setAlert(alertMessage);
+         // Remove the alert message from the localStorage object
+         localStorage.removeItem("alert");
+       }
   
     fetchData();
   }, [])
 
   const handleDelete = async (id) => {
     try {
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/delete-event/${id}`, {method: "DELETE"});
-
-      window.location.reload()
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/delete-event/${id}`, {method: "DELETE"});
+      setAlert({ message: "event deleted successfully", type: "success" });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
-        console.error(error);
+      setAlert({ message: "Error deleting event", type: "error" });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      console.error(error);
     }
-};
+  };
   
 
   const columns = [
@@ -105,6 +124,14 @@ const Events = () => {
         title="Events"
         subtitle="Track your events details here"
       />
+
+{alert && ( // Render the alert message if it exists
+          <CustomAlertBox
+            message={alert.message}
+            type={alert.type}
+            onClose={() => setAlert(null)}
+          />
+        )}
 
      
 

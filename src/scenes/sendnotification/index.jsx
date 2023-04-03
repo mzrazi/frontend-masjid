@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import Header from "components/Header";
+import CustomAlertBox from "components/customAlertBox";
 
-import { useNavigate } from "react-router-dom";
 
 const SendNotification = () => {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [selectedUsers, setSelectedUsers] = useState("all");
-  const navigate = useNavigate();
+  
   const [allUsers, setAllUsers] = useState([]);
+  const [alert, setAlert] = useState(null);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/all-users`)
@@ -27,19 +28,41 @@ const SendNotification = () => {
         body: JSON.stringify({ title,message, selectedUsers }),
       });
       const data = await response.json();
-      
-      navigate("/notifications");
+      setTitle("")
+      setMessage("")
+      setSelectedUsers("all")
+      setAlert({ type: "success", message: "notification send successfully!" });
+     
     } catch (error) {
+      setAlert({ type: "error", message: "Error sending notification" });
       console.error(error);
     }
   };
+  
+  const handleCloseAlert = () => {
+    setAlert(null);
+  };
+
   
 
   return (
     <Box m="1.5rem 2.5rem">
       <Header title="SEND NOTIFICATION" subtitle="Send a notification to users" />
 
+
+
+
       <div className="container mt-5">
+      {alert && (
+          <CustomAlertBox
+            message={alert.message}
+            type={alert.type}
+            onClose={handleCloseAlert}
+          />
+        )}
+
+
+
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <div className="form-group">
             <TextField

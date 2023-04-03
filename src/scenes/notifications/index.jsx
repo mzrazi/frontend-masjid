@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, useTheme,Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import {Link} from "react-router-dom";
-
+import CustomAlertBox from "components/customAlertBox";
 import Header from "components/Header";
 import CustomColumnMenu from "components/DataGridCustomColumnMenu";
 
@@ -10,6 +10,7 @@ const Notifications = () => {
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
+  const [alert, setAlert] = useState(null);
  
 
 
@@ -34,9 +35,16 @@ const Notifications = () => {
   const handleDelete = async (id) => {
     try {
         await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/delete-notification/${id}`, {method: "DELETE"});
-
-      window.location.reload()
+        setAlert({ message: "notification deleted successfully", type: "success" });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      
     } catch (error) {
+      setAlert({ message: "Error deleting notification", type: "error" });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
         console.error(error);
     }
 };
@@ -85,6 +93,14 @@ const Notifications = () => {
         title="Notifications"
         subtitle="Track your events notifications here"
       />
+
+{alert && ( // Render the alert message if it exists
+          <CustomAlertBox
+            message={alert.message}
+            type={alert.type}
+            onClose={() => setAlert(null)}
+          />
+        )}
 
      
 

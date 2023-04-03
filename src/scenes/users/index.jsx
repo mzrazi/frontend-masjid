@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import DataGridCustomToolbar from "components/DataGridCustomToolbar";
 import {Link} from "react-router-dom";
-
+import CustomAlertBox from "components/customAlertBox";
 
 import { Button } from "@mui/material";
 
@@ -11,6 +11,7 @@ const Users = () => {
   const [users, setUsers] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [searchedUsers, setSearchedUsers] = useState([]);
+  const [alert, setAlert] = useState(null);
   
 const columns = [
     { field: "id", headerName: "ID", width: 80 },
@@ -78,6 +79,14 @@ const columns = [
     };
 
     fetchUsers();
+        // Get the alert message from the localStorage object
+        const alertMessage = JSON.parse(localStorage.getItem("useralert"));
+        if (alertMessage) {
+          setAlert(alertMessage);
+          // Remove the alert message from the localStorage object
+          localStorage.removeItem("useralert");
+        }
+   
   }, []);
 
   useEffect(() => {
@@ -92,17 +101,34 @@ const columns = [
 
   const handleDelete = async (id) => {
     try {
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/delete-user/${id}`, {method: "DELETE"});
-
-      window.location.reload()
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/delete-user/${id}`, {method: "DELETE"});
+      setAlert({ message: "User deleted successfully", type: "success" });
+      setTimeout(() => {
+        window.location.reload();
+       
+      }, 1000);
     } catch (error) {
-        console.error(error);
+      console.error(error);
+      setAlert({ message: "Error deleting user", type: "error" });
+      setTimeout(() => {
+        window.location.reload();
+       
+      }, 1000);
     }
-};
+  };
+  
+  
 
   return (
     
     <div style={{ height: 600, width: "98%",marginLeft:"20px" }}>
+      {alert && ( // Render the alert message if it exists
+          <CustomAlertBox
+            message={alert.message}
+            type={alert.type}
+            onClose={() => setAlert(null)}
+          />
+        )}
       <DataGrid
   rows={searchedUsers}
   columns={columns}

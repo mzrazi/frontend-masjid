@@ -10,24 +10,22 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import CustomAlertBox from "components/customAlertBox";
 
-import CustomAlert from "components/CustomAlert";
+
+
 
 const Settings = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [username, setUsername] = useState("");
-  const [passwordChanged, setPasswordChanged] = useState(false);
-const [usernameChanged, setUsernameChanged] = useState(false);
-const [error, setError] = useState(false);
-const [errorMessage, setErrormessage] = useState();
+  const [passwordalert, setPasswordAlert] = useState(null);
+  const [usernamealert, setUsernameAlert] = useState(null);
 const [showNewPassword, setShowNewPassword] = useState("");
 const [showCurrentPassword, setShowCurrentPassword] = useState("");
 
 const handleChangePassword = () => {
-    setPasswordChanged("false")
-    setError(false)
     const userId = localStorage.getItem("userId");
     fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/change-admin-password`, {
       method: 'PUT',
@@ -44,12 +42,10 @@ const handleChangePassword = () => {
       .then((response) => {
         if (response.ok) {
           console.log('Password changed successfully', response);
-          setPasswordChanged(true);
-          setError(false);
+          setPasswordAlert({ type: "success", message: "Password changed successfully" });
         } else {
           console.error('Error changing password:', response);
-          setPasswordChanged(false);
-          setError(true);
+          setPasswordAlert({ type: "error", message: "Error changing password:" });
         }
         setConfirmNewPassword("")
         setNewPassword("")
@@ -57,17 +53,16 @@ const handleChangePassword = () => {
       })
       .catch((error) => {
         console.error('Error changing password:', error);
-        setPasswordChanged(false);
-        setError(true);
+      
         setConfirmNewPassword("")
         setNewPassword("")
         setCurrentPassword("")
+        setPasswordAlert({ type: "error", message: "Error changing password:" });
       });
   };
   
   const handleChangeUsername = () => {
-    setUsernameChanged(false)
-    setError(false)
+  
     const userId = localStorage.getItem("userId");
     fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/change-admin-username/`, {
       method: 'PUT',
@@ -81,51 +76,48 @@ const handleChangePassword = () => {
     })
       .then((response) => {
         if (response.ok) {
-          setUsernameChanged(true);
-          setError(false);
+          setUsernameAlert({ type: "success", message: "username changed successfully" });
+       
         } else {
+          setUsernameAlert({ type: "error", message: "Error changing username:" });
           throw new Error('Error changing username.');
+         
         }
       })
       .catch((error) => {
-        console.error('Error changing username:', error);
-        setUsernameChanged(false);
-        setError(true);
+        
+        setUsernameAlert({ type: "error", message: "Error changing username:" });
+     
       });
     setUsername("")
   };
-  
+  const handleClosePasswordAlert = () => {
+    setPasswordAlert(null);
+  };
+
+  const handleCloseUsernameAlert = () => {
+    setUsernameAlert(null);
+  };
+
 
   return (
     <Box m="1.5rem 2.5rem">
       <Typography variant="h4" component="h1" mb="2rem">
         Settings
       </Typography>
-      {passwordChanged && (
-      <CustomAlert
-        successMessage="Password changed successfully!"
-        onClose={() => setPasswordChanged(false)}
-      />
-    )}
-    {usernameChanged && (
-      <CustomAlert
-        successMessage="Username changed successfully!"
-        onClose={() => setUsernameChanged(false)}
-      />
-    )}
-    {error && (
-      <CustomAlert
-        errorMessage={
-          errorMessage
-            ? errorMessage
-            : 'An error occurred. Please try again later.'
-        }
-        onClose={() => setError(false)}
-      />
-    )}
+   
+     
 
       {/* Change Password */}
       <Box mb="2rem">
+
+      {passwordalert && (
+          <CustomAlertBox
+            message={passwordalert.message}
+            type={passwordalert.type}
+            onClose={handleClosePasswordAlert}
+          />
+        )}
         <Typography variant="h6" component="h2" mb="1rem">
           Change Password
         </Typography>
@@ -193,6 +185,14 @@ const handleChangePassword = () => {
 
       {/* Change Username */}
       <Box>
+
+      {usernamealert && (
+          <CustomAlertBox
+            message={usernamealert.message}
+            type={usernamealert.type}
+            onClose={handleCloseUsernameAlert}
+          />
+        )}
         <Typography variant="h6" component="h2" mb="1rem">
           Change Username
         </Typography>

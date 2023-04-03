@@ -6,6 +6,8 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 
+import CustomAlertBox from "components/customAlertBox";
+
 import jwt_decode from "jwt-decode"
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -17,8 +19,9 @@ import { useNavigate } from 'react-router-dom';
 const theme = createTheme();
 
 export default function Login({ setIsAuthenticated, isAuthenticated }){
-  const [error, setError] = useState("");
+ 
   const Navigate = useNavigate();
+  const [alert, setAlert] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,14 +48,15 @@ export default function Login({ setIsAuthenticated, isAuthenticated }){
         
           Navigate("/dashboard");
         } else {
-          setError("Invalid token or token has expired.");
+          setAlert({ message: "login failed.invalid token", type: "error" });
         }
       } else {
-        setError(data.message);
+        setAlert({ message: data.message, type: "error" });
       }
     } catch (error) {
       console.error(error);
-      setError("An error occurred. Please try again later.");
+      setAlert({ message: "login failed.invalid username or password", type: "error" });
+      
     }
   };
   
@@ -75,7 +79,13 @@ export default function Login({ setIsAuthenticated, isAuthenticated }){
            ADMIN LOGIN
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            {error && <div>{error}</div>}
+          {alert && ( // Render the alert message if it exists
+          <CustomAlertBox
+            message={alert.message}
+            type={alert.type}
+            onClose={() => setAlert(null)}
+          />
+        )}
             <TextField
               margin="normal"
               required

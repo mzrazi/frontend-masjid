@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import CustomAlertBox from "components/customAlertBox";
 
 const styles = {
   container: {
@@ -39,6 +40,7 @@ const styles = {
 
 const Addimage = () => {
   const [previewImage, setPreviewImage] = useState(null);
+  const [alert, setAlert] = useState(null);
 
   const handlePreviewImage = (event) => {
     const file = event.target.files[0];
@@ -58,15 +60,30 @@ const Addimage = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        
-        window.location.reload();
+        setAlert({ type: "success", message: "Image uploaded successfully!" });
+        setPreviewImage(null);
+        event.target.reset();
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        setAlert({ type: "error", message: "Error uploading image" });
+      });
   };
-  
+
+  const handleCloseAlert = () => {
+    setAlert(null);
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.card}>
+        {alert && (
+          <CustomAlertBox
+            message={alert.message}
+            type={alert.type}
+            onClose={handleCloseAlert}
+          />
+        )}
         <h3 style={{ textAlign: "center", marginBottom: "1.5rem" }}>
           Image Upload Form
         </h3>
@@ -85,7 +102,11 @@ const Addimage = () => {
           </div>
           {previewImage && (
             <div style={{ textAlign: "center" }}>
-              <img src={previewImage} alt="Preview" style={styles.previewImage} />
+              <img
+                src={previewImage}
+                alt="Preview"
+                style={styles.previewImage}
+              />
             </div>
           )}
           <button type="submit" style={styles.submitButton}>
@@ -98,4 +119,3 @@ const Addimage = () => {
 };
 
 export default Addimage;
-

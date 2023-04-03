@@ -41,9 +41,14 @@ const Edituser = () => {
               },
             body: JSON.stringify({FirstName,LastName,Address,UserId})
         }).then((response) => response.json()).then((data) => {
+            localStorage.setItem("useralert", JSON.stringify({ message: "User updated successfully", type: "success" }));
            
             navigate('/users');
-        }).catch((error) => console.error(error));
+        }).catch((error) =>{ 
+        localStorage.setItem("useralert", JSON.stringify({ message: "Failed to update User. Please try again later", type: "error" }))
+        console.error(error)
+        navigate('/users');
+    })
     }
     
 

@@ -1,26 +1,54 @@
-import React, {useState} from "react";
-import {Box, Button, TextField} from "@mui/material";
+import React, { useState } from "react";
+import { Box, Button, TextField } from "@mui/material";
 import Header from "components/Header";
-
+import CustomAlertBox from "components/customAlertBox"
 
 const AddEvents = () => {
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [date, setDate] = useState("");
-    const [imagePreview, setImagePreview] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState("");
+  const [imagePreview, setImagePreview] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("");
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/save-event`, {
-            method: "POST",
-            body: formData
-        }).then((response) => response.json()).then((data) => {
-         
-            window.location.reload();
-        }).catch((error) => console.error(error));
-    };
-
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/save-event`, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setAlertMessage("Form submitted successfully");
+        setAlertType("success");
+        setTimeout(() => {
+            setAlertMessage("");
+            setAlertType("");
+        }, 6000);
+        setTitle("");
+        setDescription("");
+        setDate("");
+        setImagePreview("");
+        event.target.image.value = ""
+        
+      })
+      .catch((error) => {
+        setAlertMessage("Error submitting form");
+        setAlertType("error");
+        setTimeout(() => {
+            setAlertMessage("");
+            setAlertType("");
+        }, 6000);
+        setTitle("");
+        setDescription("");
+        setDate("");
+        setImagePreview("");
+        event.target.image.value = ""
+        
+        console.error(error);
+      });
+  };
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
@@ -31,12 +59,29 @@ const AddEvents = () => {
 
         reader.readAsDataURL(file);
     };
+    const handleCloseAlert = () => {
+        setAlertMessage("");
+        setAlertType("");
+      };
 
     return (
+
+
+
+
         <Box m="1.5rem 2.5rem">
             <Header title="ADD EVENTS" subtitle="Add events to the database"/>
 
+           
+
             <div className="container mt-5">
+        {alertMessage && (
+          <CustomAlertBox
+            message={alertMessage}
+            type={alertType}
+            onClose={handleCloseAlert}
+          />
+        )}
 
 
                 <form onSubmit={handleSubmit}

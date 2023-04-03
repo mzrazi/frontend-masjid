@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-
+import CustomAlertBox from "components/customAlertBox";
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 
@@ -12,6 +12,7 @@ const Message= () => {
   // const [searchedUsers, setSearchedUsers] = useState([]);
 
   const [messages, setMessages] = useState([]);
+  const [alert, setAlert] = useState(null);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -23,7 +24,13 @@ const Message= () => {
 
         
         setMessages(messagesWithId); // update to access the "messages" key
-        console.log(messages);
+        const alertMessage = JSON.parse(localStorage.getItem("messagealert"));
+        if (alertMessage) {
+          setAlert(alertMessage);
+          // Remove the alert message from the localStorage object
+          localStorage.removeItem("messagealert");
+        }
+
        
       } catch (error) {
         console.error(error);
@@ -33,14 +40,24 @@ const Message= () => {
     
 
     fetchMessages();
-  }, [messages]);
+  }, []);
 
   const  handleDelete= async (id) => {
     try {
         await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/delete-message/${id}`, {method: "DELETE"});
-
-      window.location.reload()
+        setAlert({ message: "message deleted successfully", type: "success" });
+        setTimeout(() => {
+          window.location.reload();
+         
+        }, 1000);
+      
     } catch (error) {
+      setAlert({ message: "Error deleting message", type: "error" });
+      setTimeout(() => {
+        window.location.reload();
+       
+      }, 1000);
+    
         console.error(error);
     }
 };
@@ -116,6 +133,13 @@ const Message= () => {
   return (
     
     <div style={{ height: 600, width: "98%",marginLeft:"20px" }}>
+       {alert && ( // Render the alert message if it exists
+          <CustomAlertBox
+            message={alert.message}
+            type={alert.type}
+            onClose={() => setAlert(null)}
+          />
+        )}
       <DataGrid
   rows={messages}
   columns={columns}

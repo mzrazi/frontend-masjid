@@ -1,72 +1,86 @@
-import React, {useState, useEffect} from "react";
-import {Box, Button, TextField} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Button, TextField } from "@mui/material";
 import Header from "components/Header";
-import { useParams,useNavigate} from "react-router-dom";
-
+import { useParams, useNavigate } from "react-router-dom";
 
 const EditEvent = () => {
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [date, setDate] = useState("");
-    const [imagePreview, setImagePreview] = useState("");
-   
-    const [eventId, setEventId] = useState("");
-    const navigate = useNavigate();
-    const {id}=useParams()
-    useEffect(() => {
-        const fetchEvent = async () => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState("");
+  const [imagePreview, setImagePreview] = useState("");
+  const [eventId, setEventId] = useState("");
+
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/admin/get-event/${id}`
+      );
+      const edit = await response.json();
+      const data = edit.events;
+
+      setTitle(data.title);
+      setDescription(data.description);
+      setDate(data.date);
+      setImagePreview(data.imagePath);
+      setEventId(data._id);
+    };
+    fetchEvent();
+  }, [id]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/api/admin/update-event/${eventId}`,
+      {
+        method: "PUT",
+        body: formData,
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        localStorage.setItem("alert", JSON.stringify({ message: "Event updated successfully", type: "success" }));
+      navigate("/events");
        
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/get-event/${id}`);
-            const edit = await response.json()
-            const data=edit.events
-           
-            setTitle(data.title);
-            setDescription(data.description);
-            setDate(data.date);
-            setImagePreview(data.imagePath);
-            setEventId(data._id);
-            
-        };
-        fetchEvent();
-    }, [id]);
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/update-event/${eventId}`, {
-            method: "PUT",
-            body: formData
-        }).then((response) => response.json()).then((data) => {
-           
-            navigate('/events');
-        }).catch((error) => console.error(error));
-    };
-
-    const handleImageChange = (event) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
+      })
+      .catch((error) => {
       
-        if (file) {
-          reader.onload = (e) => {
-            const image = e.target.result;
-            setImagePreview(image);
-          };
-      
-          reader.readAsDataURL(file);
-        } else {
-          setImagePreview("");
-        }
-    };
-    
+        localStorage.setItem("alert", JSON.stringify({ message: "Failed to update event. Please try again later", type: "error" }));
+        navigate("/events");
+        console.error(error);
+      });
+  };
 
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    if (file) {
+      reader.onload = (e) => {
+        const image = e.target.result;
+        setImagePreview(image);
+      };
+
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview("");
+    }
+  };
    
     
 
     return (
         <Box m="1.5rem 2.5rem">
             <Header title="EDIT EVENT" subtitle="Edit an existing event"/>
+            
+
+          
 
             <div className="container mt-5">
+   
                 <form onSubmit={handleSubmit}
                     encType="multipart/form-data">
                     <div className="form-group">
